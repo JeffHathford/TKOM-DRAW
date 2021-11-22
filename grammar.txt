@@ -1,0 +1,84 @@
+DIGIT
+    : ? all digits from '0' to '9' ?
+
+POSITIVE_DIGIT
+    : DIGIT - '0'
+
+LETTER
+    : ? all characters from sets ['a'-'z'] and ['A'-'Z'] ?
+
+SYMBOL
+    : ? all visible characters ?
+
+INT_CONST
+    : DIGIT
+    | DIGIT POSITIVE_DIGIT+
+
+FLOAT_CONST
+    : DIGIT DOT_SEPARATOR DIGIT+
+
+CHAR_CONST
+    : '\'' SYMBOL '\'
+
+STRING_CONST
+    : '\"' (SYMBOL - '\"')+ '\"'
+
+identifier
+    : LETTER (LETTER | DIGIT | '_')+
+
+constant
+    : INT_CONST
+    | FLOAT_CONST
+    | CHAR_CONST
+    | STRING_CONST
+
+type
+    : INT_TYPE
+    | FLOAT_TYPE
+    | CHAR_TYPE
+    | STRING_TYPE
+
+operator
+    : ASSIGN
+    | NOT
+    | PLUS
+    | MINUS
+    | DIV
+    | MULT
+    | MOD
+    | GREAT
+    | LESS
+    | EQUALS
+    | NOT_EQ
+    | E_GREAT
+    | E_LESS
+    | OR
+    | AND
+
+expression
+    : identifier (operator - ASSIGN) (constant | identifier | expression)
+    | (L_PAREN expression R_PAREN)
+
+assignment
+    : identifier ASSIGN (constant | identifier | expression)
+
+conditional
+    : IF_COND L_PAREN expression R_PAREN codeBlock
+
+whileLoop
+    : WHILE L_PAREN (expression | identifier) R_PAREN codeBlock
+
+forLoop
+    : FOR L_PAREN identifier expression (MINUS|PLUS) (constant | identifier) R_PAREN codeBlock
+
+simpleLoop
+    : LOOP L_PAREN (constant | identifier) R_PAREN codeBlock
+
+statement
+    : expression | conditional | whileLoop | forLoop | simpleLoop
+
+codeBlock
+    : (L_BLOCK statement+ R_BLOCK | statement SEMICOLON)
+
+functionDefinition
+    : NEW_FUNC identifier L_PAREN type identifier (COMMA type identifier)+ L_BLOCK type R_PAREN codeBlock
